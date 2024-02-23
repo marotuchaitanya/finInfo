@@ -1,6 +1,7 @@
 import 'package:fin_project/models/profile_model.dart';
 import 'package:fin_project/services/profile_services.dart';
 import 'package:fin_project/util_constants/constants.dart';
+import 'package:fin_project/util_constants/shimmer_effect.dart';
 import 'package:flutter/material.dart';
 
 class ProfileView extends StatefulWidget {
@@ -34,7 +35,15 @@ class _ProfileViewState extends State<ProfileView> {
         future: futureUser,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return ShimmerEffectView(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              baseColor: Colors.grey,
+              primaryColor: Colors.black,
+              highLightColor: Colors.blueGrey,
+              width: 310,
+              height: MediaQuery.of(context).size.height,
+            );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
@@ -43,23 +52,17 @@ class _ProfileViewState extends State<ProfileView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ListTile(
-                  leading: /* Image.network(
-                    user.imageUrl,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Text('Error loading image');
-                    },
-                  ), */
-                      CircleAvatar(radius: 40, backgroundImage: NetworkImage(user.imageUrl)),
+                  leading: Container(
+                      width: 60,
+                      height: 100,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black, width: 2),
+                          shape: BoxShape.circle,
+                          image: DecorationImage(image: NetworkImage((user.imageUrl))))),
                   title: Text(user.fullName),
                   subtitle: Text(user.location),
                 ),
+                const Divider(),
                 ListTile(
                   title: Text('Email: ${user.email}', style: style),
                 ),
